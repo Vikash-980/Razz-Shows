@@ -1,6 +1,6 @@
 
 
-import User from "../models/userModel.js"; // Apna User model sahi path se import karein
+import User from "../models/User.js"; // Apna User model sahi path se import karein
 
 export const protectAdmin = async (req, res, next) => {
     try {
