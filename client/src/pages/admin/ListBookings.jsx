@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { dummyBookingData } from '../../assets/assets';
 import Loading from '../../components/Loading';
 import Title from '../../components/admin/Title';
@@ -20,7 +20,7 @@ const ListBookings = () => {
             const {data} = await axios.get("/api/admin/all-bookings", {
                 headers: {Authorization: `Bearer ${await getToken()}`}
             });
-            setBookings(data.bookings)
+            setBookings(data.bookings || [])
         } catch (error) {
             console.error(error);
         }
@@ -50,10 +50,11 @@ const ListBookings = () => {
             <tbody className='text-sm font-light'>
                 {bookings.map((item, index) => (
                     <tr key={index} className='border-b border-primary/20 bg-primary/5 even:bg-primary/10'>
-                        <td className='p-2 min-w-45 pl-5'>{item.user.name}</td>
-                        <td className='p-2'>{item.show.movie.title}</td>
-                        <td className='p-2'>{dateFormat(item.show.showDatetime)}</td>
-                        <td className='p-2'>{Object.keys(item.bookedSeats).map(seat => item.bookedSeats[seat]).join(", ")}</td>
+                        {/* Optional Chaining (?.) lagaya gaya hai null safety ke liye */}
+                        <td className='p-2 min-w-45 pl-5'>{item.user?.name ?? 'Guest / Deleted User'}</td>
+                        <td className='p-2'>{item.show?.movie?.title ?? 'N/A'}</td>
+                        <td className='p-2'>{item.show?.showDatetime ? dateFormat(item.show.showDatetime) : 'N/A'}</td>
+                        <td className='p-2'>{item.bookedSeats ? Object.keys(item.bookedSeats).map(seat => item.bookedSeats[seat]).join(", ") : 'N/A'}</td>
                         <td className='p-2'>{currency} {item.amount}</td>
                     </tr>
                 ))}
